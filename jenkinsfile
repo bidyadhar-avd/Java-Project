@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    
+    tools { 
+      maven 'maven3' 
+      jdk 'OpenJDK8' 
+    }
+
+    stages {
+        stage('checkout code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/bidyadhar-avd/Java-Project.git'
+            }
+        }
+        stage('build code') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Deployment'){
+			steps{
+				deploy adapters: [ tomcat9(url: 'http://18.234.46.68:8080/', credentialsId: 'TomcatCreds')], war:'target/*.war'
+			}
+		}
+    }
+}
